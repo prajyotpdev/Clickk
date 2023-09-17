@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "647426385900",
+    "project_id": "chatvak-4c341",
+    "storage_bucket": "chatvak-4c341.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:647426385900:android:b73cfdb46264e3eb3a02c9",
+        "android_client_info": {
+          "package_name": "com.example.clickk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "647426385900-p6godii3md5qru93kl78u1dqrv7gbkqd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAleH5yEHbaByWzjVjY8NmyTS4rcDIVxQ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "647426385900-p6godii3md5qru93kl78u1dqrv7gbkqd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
