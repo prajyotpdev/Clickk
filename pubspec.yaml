@@ -41,6 +41,10 @@ dependencies:
   marquee: ^2.2.3
   google_sign_in: ^6.1.5
   provider: ^6.0.5
+  modal_progress_hud_nsn: ^0.4.0
+  lottie: ^2.6.0
+  cloud_firestore: ^4.9.2
+  get: ^4.6.6
 
 dev_dependencies:
   flutter_test:
