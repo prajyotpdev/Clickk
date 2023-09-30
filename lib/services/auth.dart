@@ -1,4 +1,5 @@
 
+import 'package:clickk/views/dashboard/dash_board.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,8 @@ class Auth{
       User? currentUser = _firebaseAuth.currentUser ;
       if (currentUser != null) {
         // Successfully logged in, navigate to the /dashboard route
-        Navigator.pushReplacementNamed(context, '/dashboard');
+        Navigator.push( context,
+          MaterialPageRoute(builder: (context) => DashBoardScreen(user: currentUser)),);
       } else {
         // Handle the case where currentUser is null (login failed)
         print("Login failed.");

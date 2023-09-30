@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +19,22 @@ class DashBoardScreen extends StatefulWidget {
 }
 
 class _DashBoardScreenState extends State<DashBoardScreen> {
-  late User _user;
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  User? _user;
+  List<Map<String, dynamic>> _experiences = [];
+  Map<String, dynamic>? _userData;
+  List<dynamic> _skills = [];
+  int _formDone = 0;
+  List<Color> skillColors = [
+    Colors.blue,
+    Colors.green,
+    Colors.red,
+    Colors.orange,
+    Colors.purple,
+    // Add more colors as needed
+  ];
   bool _isSigningOut = false;
 
   Route _routeToSignInScreen() {
@@ -42,17 +58,45 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
 
   @override
   void initState() {
-    _user = widget._user!;
-
+    checkform();
     super.initState();
+  }
+
+
+  Future<void> checkform() async {
+    _user = _auth.currentUser;
+    if (_user != null) {
+      DocumentSnapshot documentSnapshot = await _firestore
+          .collection('userdata')
+          .doc(_user!.uid) // Use the current user's UID as the document ID
+          .get();
+
+      if (documentSnapshot.exists) {
+        final userData = documentSnapshot.data() as Map<String, dynamic>?;
+        if (userData != null && userData.containsKey('formdone')) {
+          // If 'formdone' field is present, set its value
+          setState(() {
+            _formDone = userData['formdone'];
+          });
+        } else {
+          // If 'formdone' field is not present, set it to 5
+          _firestore
+              .collection('userdata')
+              .doc(_user!.uid)
+              .set({'formdone': 3}, SetOptions(merge: true));
+
+          setState(() {
+            _formDone = 3;
+          });
+        }
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
 
 
-    final userProvider = Provider.of<UserProvider>(context);
-    final currentUser = userProvider.user;
 
     return Scaffold(
       backgroundColor: CustomColors.firebaseNavy,
@@ -72,12 +116,12 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Row(),
-              _user.photoURL != null
+              _user?.photoURL != null
                   ? ClipOval(
                 child: Material(
                   color: CustomColors.firebaseGrey.withOpacity(0.3),
                   child: Image.network(
-                    _user.photoURL!,
+                    _user!.photoURL!,
                     fit: BoxFit.fitHeight,
                   ),
                 ),
@@ -105,7 +149,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               ),
               SizedBox(height: 8.0),
               Text(
-                _user.displayName!,
+                _user!.displayName!,
                 style: TextStyle(
                   color: CustomColors.firebaseYellow,
                   fontSize: 26,
@@ -113,7 +157,7 @@ class _DashBoardScreenState extends State<DashBoardScreen> {
               ),
               SizedBox(height: 8.0),
               Text(
-                '( ${_user.email!} )',
+                '( ${_user!.email!} )',
                 style: TextStyle(
                   color: CustomColors.firebaseOrange,
                   fontSize: 20,

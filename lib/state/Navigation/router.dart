@@ -13,5 +13,4 @@ final Map<String, WidgetBuilder> routes = {
   '/': (context) => HomePage(),
   '/login': (context) => LoginPage(),
   '/signup': (context) => SignupPage(),
-  '/dashboard': (context) => DashBoardScreen(user: Provider.of<UserProvider>(context).user! ),
 };
