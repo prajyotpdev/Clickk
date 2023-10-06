@@ -1,14 +1,15 @@
-import 'package:clickk/state/Navigation/router.dart';
-import 'package:clickk/state/currentUser/user_provider.dart';
+// ignore_for_file: avoid_print
+
+import 'package:clickk/firebase_options.dart';
 import 'package:clickk/views/auth/signin/sign_in_page.dart';
 import 'package:clickk/views/dashboard/dash_board.dart';
+import 'package:clickk/views/job_profile/ProfilePage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import 'firebase_options.dart';
-import 'utils/constant.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,7 +38,8 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     final FirebaseAuth _auth = FirebaseAuth.instance;
-    return MaterialApp(
+
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -48,11 +50,12 @@ class _MyAppState extends State<MyApp> {
         stream: _auth.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {
-            User? user = snapshot.data as User?;
+            User? user = snapshot.data;
+            print(user?.email);
             if (user == null) {
               return LoginPage();
             } else {
-              return DashBoardScreen(user: user);
+              return DashBoardPage();
             }
           } else {
             return Scaffold(body: Center(child: CircularProgressIndicator()));

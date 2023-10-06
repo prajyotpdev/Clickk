@@ -1,5 +1,6 @@
 
 import 'package:clickk/views/dashboard/dash_board.dart';
+import 'package:clickk/views/job_profile/ProfilePage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -26,8 +27,12 @@ class Auth{
       User? currentUser = _firebaseAuth.currentUser ;
       if (currentUser != null) {
         // Successfully logged in, navigate to the /dashboard route
-        Navigator.push( context,
-          MaterialPageRoute(builder: (context) => DashBoardScreen(user: currentUser)),);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => JobProfilePage(),
+          ),
+        );
       } else {
         // Handle the case where currentUser is null (login failed)
         print("Login failed.");

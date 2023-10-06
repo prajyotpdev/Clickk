@@ -2,6 +2,7 @@
 import 'package:clickk/utils/constant.dart';
 import 'package:clickk/views/auth/signin/widgets/GoogleSignIn.dart';
 import 'package:clickk/views/dashboard/dash_board.dart';
+import 'package:clickk/views/job_profile/ProfilePage.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -44,19 +45,19 @@ class _LoginPageState extends State<LoginPage> {
   ValueNotifier<int> myCoins = ValueNotifier<int>(10);
 
 
-  Future<void> signInWithEmailAndPassword() async{
-    try {
-      await Auth().signInWithEmailAndPassword(
-          email: _controllerEmail.text,
-          password: _controllerPassword.text, context: context
-      );
-
-    } on FirebaseAuthException catch (e){
-      setState(() {
-        errorMessage=e.message;
-      });
-    }
-  }
+  // Future<void> signInWithEmailAndPassword() async{
+  //   try {
+  //     await Auth().signInWithEmailAndPassword(
+  //         email: _controllerEmail.text,
+  //         password: _controllerPassword.text, context: context
+  //     );
+  //
+  //   } on FirebaseAuthException catch (e){
+  //     setState(() {
+  //       errorMessage=e.message;
+  //     });
+  //   }
+  // }
 
   Row addRadioButton(int btnValue, String title) {
     return Row(
@@ -201,6 +202,7 @@ class _LoginPageState extends State<LoginPage> {
                         },
                       ),
                       SizedBox(height: 16.0),
+
                       ElevatedButton(
                         onPressed: _isLoading
                             ? null
@@ -209,19 +211,18 @@ class _LoginPageState extends State<LoginPage> {
                             setState(() {
                               _isLoading = true;
                             });
+                            User? currentUser = FirebaseAuth.instance.currentUser;
                             try {
                               await FirebaseAuth.instance
                                   .signInWithEmailAndPassword(
                                 email: _emailController.text,
                                 password: _passwordController.text,
                               );
-
-                              User? user = FirebaseAuth.instance.currentUser;
                               // Navigate to the homepage upon successful login
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => DashBoardScreen(user: user!),
+                                  builder: (context) => DashBoardPage(),
                                 ),
                               );
                             } catch (e) {

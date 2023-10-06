@@ -1,4 +1,5 @@
 import 'package:clickk/views/auth/signup/widgets/registerWithEmailPassword.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -239,6 +240,16 @@ class _SignupPageState extends State<SignupPage> {
                                 email: _emailController.text,
                                 password: _passwordController.text,
                               );
+                              final User? user = FirebaseAuth.instance.currentUser;
+                              if (user != null) {
+                                // Create a new document in the 'users' collection with the user's UID as the document ID
+                                await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+                                  'name': _nameController.text,
+                                  'username': _usernameController.text,
+                                  'address': _addressController.text,
+                                  'phoneNumber': _phoneNumberController.text,
+                                });
+                              }
                               await registerWithEmailAndPassword(
                                 _emailController.text,
                                 _nameController.text,
@@ -247,6 +258,7 @@ class _SignupPageState extends State<SignupPage> {
                                 _phoneNumberController.text,
                               );
                             } catch (e) {
+                              print('Error creating user: $e');
                             } finally {
                               setState(() {
                                 _isLoading = false;

@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
 
-    final userProvider = Provider.of<UserProvider>(context);
+    // final userProvider = Provider.of<UserProvider>(context);
 
     return
       Scaffold(

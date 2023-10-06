@@ -1,25 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../state/currentUser/user_provider.dart';
-import '../auth/signin/sign_in_page.dart';
 import '../dashboard/dash_board.dart';
-import '../widgets/BottomNavBar.dart';
 
-class DashBoardPage extends ConsumerStatefulWidget {
-
-  const DashBoardPage({super.key});
-  static const String routeName = '/submit-page-endurance';
-
+class JobProfilePage extends StatefulWidget {
   @override
-  ConsumerState<DashBoardPage> createState() =>
-      _DashBoardPageConsumerState();
+  State<JobProfilePage> createState() => _JobProfilePageState();
 }
 
-class _DashBoardPageConsumerState
-    extends ConsumerState<DashBoardPage> {
+class _JobProfilePageState extends State<JobProfilePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   User? _user;
@@ -74,7 +64,6 @@ class _DashBoardPageConsumerState
   }
 
   Future<void> _getUserData() async {
-    UserProvider();
     final user = _auth.currentUser;
     if (user != null) {
       setState(() {
@@ -115,8 +104,8 @@ class _DashBoardPageConsumerState
 
   @override
   Widget build(BuildContext context) {
-
-    return MaterialApp(
+    return _formDone == 0
+        ? MaterialApp(
       home: WillPopScope(
         onWillPop: () async {
           // Return true to allow navigation back, return false to prevent it
@@ -124,19 +113,13 @@ class _DashBoardPageConsumerState
         },
         child: Scaffold(
           appBar: AppBar(
-            title: Text('DashBoard Page'),
+            title: Text('Profile page'),
             actions: [
               if (_user != null)
                 IconButton(
                   icon: Icon(Icons.logout),
                   onPressed: () async {
                     await _auth.signOut();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => LoginPage(),
-                      ),
-                    );
                   },
                 ),
             ],
@@ -531,21 +514,12 @@ class _DashBoardPageConsumerState
               ],
             ),
           ),
-          bottomNavigationBar: BottomNavigatorExample(),
         ),
       ),
-    );
+    )
+        : Text('Invalid formdone value:');
   }
 
-  //
-  // Widget _buildPageForFormDoneValue(int formDone) {
-  //   switch (formDone) {
-  //     case 1:
-  //       return DashBoardScreen();
-  //
-  //     default:
-  //       return Text('Invalid formdone value: $formDone');
-  //   }
-  // }
+
 }
 
