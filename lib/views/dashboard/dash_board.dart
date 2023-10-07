@@ -7,6 +7,7 @@ import '../../state/currentUser/user_provider.dart';
 import '../auth/signin/sign_in_page.dart';
 import '../dashboard/dash_board.dart';
 import '../widgets/BottomNavBar.dart';
+import '../widgets/MyAppBar.dart';
 
 class DashBoardPage extends ConsumerStatefulWidget {
 
@@ -123,24 +124,7 @@ class _DashBoardPageConsumerState
           return false; // Prevent back navigation
         },
         child: Scaffold(
-          appBar: AppBar(
-            title: Text('DashBoard Page'),
-            actions: [
-              if (_user != null)
-                IconButton(
-                  icon: Icon(Icons.logout),
-                  onPressed: () async {
-                    await _auth.signOut();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => LoginPage(),
-                      ),
-                    );
-                  },
-                ),
-            ],
-          ),
+          appBar: MyAppBar(title: 'Dashboard'),
           backgroundColor: Color.fromARGB(255, 3, 53, 41),
           body: SingleChildScrollView(
             child: Stack(

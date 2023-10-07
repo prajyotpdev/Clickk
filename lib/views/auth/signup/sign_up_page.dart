@@ -225,6 +225,32 @@ class _SignupPageState extends State<SignupPage> {
                           return null;
                         },
                       ),
+                      // SizedBox(height: 16.0),
+                      // TextFormField(
+                      //   controller: _phoneNumberController,
+                      //   keyboardType: TextInputType.phone,
+                      //   decoration: InputDecoration(
+                      //       filled: true,
+                      //       prefixIcon: Icon(
+                      //         Icons.phone,
+                      //         color: Colors.amber,
+                      //       ),
+                      //       suffixIcon: Icon(
+                      //         Icons.phone,
+                      //         color: Colors.amber,
+                      //       ),
+                      //       fillColor: Color.fromARGB(173, 212, 189, 189),
+                      //       border: OutlineInputBorder(),
+                      //       labelText: 'Role'),
+                      //   validator: (value) {
+                      //     if (value!.isEmpty) {
+                      //       return 'Please enter your phone number';
+                      //     } else if (!RegExp(r'^\d{10}$').hasMatch(value)) {
+                      //       return 'Phone number must have exactly 10 digits';
+                      //     }
+                      //     return null;
+                      //   },
+                      // ),
                       SizedBox(height: 16.0),
                       ElevatedButton(
                         onPressed: _isLoading

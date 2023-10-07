@@ -81,7 +81,7 @@ class _JobProfilePageState extends State<JobProfilePage> {
             .get();
         setState(() {
           _experiences = experiencesData.docs
-              .map((doc) => doc.data() as Map<String, dynamic>)
+              .map((doc) => doc.data())
               .toList();
         });
 
@@ -104,8 +104,7 @@ class _JobProfilePageState extends State<JobProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return _formDone == 0
-        ? MaterialApp(
+    return MaterialApp(
       home: WillPopScope(
         onWillPop: () async {
           // Return true to allow navigation back, return false to prevent it
@@ -516,8 +515,7 @@ class _JobProfilePageState extends State<JobProfilePage> {
           ),
         ),
       ),
-    )
-        : Text('Invalid formdone value:');
+    );
   }
 
 
