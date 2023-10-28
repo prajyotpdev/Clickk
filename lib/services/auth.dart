@@ -1,4 +1,6 @@
 
+// ignore_for_file: unused_import
+
 import 'package:clickk/views/dashboard/dash_board.dart';
 import 'package:clickk/views/job_profile/ProfilePage.dart';
 import 'package:firebase_auth/firebase_auth.dart';

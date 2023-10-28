@@ -1,3 +1,4 @@
+import 'package:clickk/state/currentUser/providers/userProvider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,23 +10,20 @@ import '../dashboard/dash_board.dart';
 import '../widgets/BottomNavBar.dart';
 import '../widgets/MyAppBar.dart';
 
-class DashBoardPage extends ConsumerStatefulWidget {
 
+class DashBoardPage extends ConsumerStatefulWidget {
   const DashBoardPage({super.key});
-  static const String routeName = '/submit-page-endurance';
 
   @override
-  ConsumerState<DashBoardPage> createState() =>
-      _DashBoardPageConsumerState();
+  DashBoardPageState createState() => DashBoardPageState();
 }
 
-class _DashBoardPageConsumerState
-    extends ConsumerState<DashBoardPage> {
+class DashBoardPageState extends ConsumerState<DashBoardPage> {
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   User? _user;
   List<Map<String, dynamic>> _experiences = [];
-  Map<String, dynamic>? _userData;
   List<dynamic> _skills = [];
   int _formDone = 0;
   List<Color> skillColors = [
@@ -37,45 +35,20 @@ class _DashBoardPageConsumerState
     // Add more colors as needed
   ];
 
+
   @override
   void initState() {
     super.initState();
-    checkform();
-    _getUserData();
+    _getUserData(ref);
+  }
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    _getUserData(ref);
+    super.didChangeDependencies();
   }
 
-  Future<void> checkform() async {
-    _user = _auth.currentUser;
-    if (_user != null) {
-      DocumentSnapshot documentSnapshot = await _firestore
-          .collection('userdata')
-          .doc(_user!.uid) // Use the current user's UID as the document ID
-          .get();
-
-      if (documentSnapshot.exists) {
-        final userData = documentSnapshot.data() as Map<String, dynamic>?;
-        if (userData != null && userData.containsKey('formdone')) {
-          // If 'formdone' field is present, set its value
-          setState(() {
-            _formDone = userData['formdone'];
-          });
-        } else {
-          // If 'formdone' field is not present, set it to 5
-          _firestore
-              .collection('userdata')
-              .doc(_user!.uid)
-              .set({'formdone': 3}, SetOptions(merge: true));
-
-          setState(() {
-            _formDone = 3;
-          });
-        }
-      }
-    }
-  }
-
-  Future<void> _getUserData() async {
-    UserProvider();
+  Future<void> _getUserData(WidgetRef ref) async {
     final user = _auth.currentUser;
     if (user != null) {
       setState(() {
@@ -86,36 +59,18 @@ class _DashBoardPageConsumerState
       if (userData.exists) {
         final userDataMap = userData.data() as Map<String, dynamic>;
 
-        final experiencesData = await _firestore
-            .collection('userdata')
-            .doc(user.uid)
-            .collection('experiences')
-            .get();
-        setState(() {
-          _experiences = experiencesData.docs
-              .map((doc) => doc.data() as Map<String, dynamic>)
-              .toList();
-        });
-
-        // Fetch the "skills" field from the user's Firestore document
-        final skills = userDataMap['skills'] as List<dynamic>;
-        setState(() {
-          _skills = skills; // Assign the skills to the _skills list
-        });
-
-        // Now you can access the 'email' property from userDataMap
-        print('User Email: ${userDataMap['email']}');
-
+        ref.read(userProvider.notifier).state= userDataMap; // Now you can access the 'email' property from userDataMap
+        final currentUser = (ref.watch(userProvider));
+        print('User Email: ${currentUser['email']}');
         // Update your widget with the user data
-        setState(() {
-          _userData = userDataMap;
-        });
       }
     }
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context ) {
+
+    final currentUser = ( ref.watch(userProvider));
 
     return MaterialApp(
       home: WillPopScope(
@@ -226,7 +181,7 @@ class _DashBoardPageConsumerState
                             child: Column(
                               children: [
                                 Text(
-                                  '${_userData?['name'] ?? 'N/A'}',
+                                  '${currentUser['name'] ?? 'N/A'}',
                                   style: TextStyle(
                                     fontSize: 24,
                                     color:
@@ -249,7 +204,7 @@ class _DashBoardPageConsumerState
                                         ),
                                         TextSpan(
                                           text:
-                                          '${_userData?['bio'] ?? 'N/A'}',
+                                          '${currentUser['bio'] ?? 'N/A'}',
                                           style: TextStyle(
                                             fontSize: 18,
                                             color: Color.fromARGB(
@@ -520,16 +475,4 @@ class _DashBoardPageConsumerState
       ),
     );
   }
-
-  //
-  // Widget _buildPageForFormDoneValue(int formDone) {
-  //   switch (formDone) {
-  //     case 1:
-  //       return DashBoardScreen();
-  //
-  //     default:
-  //       return Text('Invalid formdone value: $formDone');
-  //   }
-  // }
 }
-

@@ -4,19 +4,27 @@ import 'package:clickk/firebase_options.dart';
 import 'package:clickk/views/auth/signin/sign_in_page.dart';
 import 'package:clickk/views/dashboard/dash_board.dart';
 import 'package:clickk/views/job_profile/ProfilePage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:get/get_navigation/get_navigation.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
+  await Firebase.initializeApp( 
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp());
+  runApp(ProviderScope(
+    child: MaterialApp(
+      title: 'Named Routes',
+      initialRoute: '/',
+      routes: {
+        '/': (context) =>  MyApp(),
+        '/login': (context) => const LoginPage(),
+        '/dashboard': (context) => const DashBoardPage(),
+      },
+    ),
+  ),);
 }
 
 class MyApp extends StatefulWidget {
@@ -37,17 +45,21 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final FirebaseAuth _auth = FirebaseAuth.instance;
+    final FirebaseAuth auth = FirebaseAuth.instance;
 
-    return GetMaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
+      routes: {
+        '/dashboard': (context) =>  DashBoardPage(),
+        '/profile': (context) =>  JobProfilePage(),
+      },
       home: StreamBuilder(
-        stream: _auth.authStateChanges(),
+        stream: auth.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {
             User? user = snapshot.data;

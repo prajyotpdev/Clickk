@@ -29,7 +29,6 @@ class _JobProfilePageState extends State<JobProfilePage> {
   @override
   void initState() {
     super.initState();
-    checkform();
     _getUserData();
   }
 
@@ -51,7 +50,7 @@ class _JobProfilePageState extends State<JobProfilePage> {
         } else {
           // If 'formdone' field is not present, set it to 5
           _firestore
-              .collection('userdata')
+              .collection('users')
               .doc(_user!.uid)
               .set({'formdone': 3}, SetOptions(merge: true));
 
@@ -74,15 +73,8 @@ class _JobProfilePageState extends State<JobProfilePage> {
       if (userData.exists) {
         final userDataMap = userData.data() as Map<String, dynamic>;
 
-        final experiencesData = await _firestore
-            .collection('userdata')
-            .doc(user.uid)
-            .collection('experiences')
-            .get();
+
         setState(() {
-          _experiences = experiencesData.docs
-              .map((doc) => doc.data())
-              .toList();
         });
 
         // Fetch the "skills" field from the user's Firestore document
@@ -270,88 +262,36 @@ class _JobProfilePageState extends State<JobProfilePage> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         margin: EdgeInsets.all(16),
-                        child: Stack(
-                          children: <Widget>[
-                            Container(
-                              margin: EdgeInsets.all(6),
-                              padding: EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 135, 212, 229),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: EdgeInsets.all(16),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          'Education',
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(height: 8),
-                                        for (var experience
-                                        in _experiences)
-                                          ListTile(
-                                            leading: Icon(
-                                              Icons.work,
-                                              color: Colors.amber,
-                                            ),
-                                            title: Text(
-                                                'Company: ${experience['companyName'] ??
-                                                    'N/A'}'),
-                                            subtitle: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment
-                                                  .start,
-                                              children: [
-                                                Text(
-                                                  'Company Name: ${experience['companyName'] ??
-                                                      'N/A'}',
-                                                  style: TextStyle(
-                                                      fontSize: 15),
-                                                ),
-                                                Text(
-                                                  'Description: ${experience['description'] ??
-                                                      'N/A'}',
-                                                  style: TextStyle(
-                                                      fontSize: 15),
-                                                ),
-                                                Text(
-                                                  'Start Date: ${experience['startDate'] ??
-                                                      'N/A'}',
-                                                  style: TextStyle(
-                                                      fontSize: 15),
-                                                ),
-                                                Text(
-                                                  'End Date: ${experience['endDate'] ??
-                                                      'N/A'}',
-                                                  style: TextStyle(
-                                                      fontSize: 15),
-                                                ),
-                                                Text(
-                                                  'Skills: ${experience['skills'] ??
-                                                      'N/A'}',
-                                                  style: TextStyle(
-                                                      fontSize: 15),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                      ],
+                        child: Container(
+                          margin: EdgeInsets.all(6),
+                          padding: EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Color.fromARGB(255, 135, 212, 229),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Column(
+                            crossAxisAlignment:
+                            CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.all(16),
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      'Education',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                    SizedBox(height: 8),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                       Card(

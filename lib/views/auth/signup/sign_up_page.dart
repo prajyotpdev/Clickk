@@ -1,20 +1,61 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 import 'package:clickk/views/auth/signup/widgets/registerWithEmailPassword.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:permission_handler/permission_handler.dart';
+
 
 import '../forgotpassword/forgot_password_page.dart';
 import '../help/help_page.dart';
 import '../signin/sign_in_page.dart';
 
-class SignupPage extends StatefulWidget {
-  @override
-  _SignupPageState createState() => _SignupPageState();
+final storage = FirebaseStorage.instance;
+final storageRef = storage.ref();
+
+XFile? _image;
+
+class PlatformUtils {
+  static bool get isMobile {
+    if (kIsWeb) {
+      return false;
+    } else {
+      return Platform.isIOS || Platform.isAndroid;
+    }
+  }
+
+  static bool get isDesktop {
+    if (kIsWeb) {
+      return false;
+    } else {
+      return Platform.isLinux || Platform.isFuchsia || Platform.isWindows || Platform.isMacOS;
+    }
+  }
 }
 
-class _SignupPageState extends State<SignupPage> {
+class SignupPage extends StatefulWidget {
+  const SignupPage({super.key});
+
+  @override
+  SignupPageState createState() => SignupPageState();
+}
+
+class SignupPageState extends State<SignupPage> {
+
+  @override
+  void initState() {
+    super.initState();
+
+  }
+
+  late String selectedOption = "User";
+  late String profileUrl = "Nothing";
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -24,18 +65,55 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController _phoneNumberController = TextEditingController();
   bool _isLoading = false;
 
+  void sponsorSelected(){
+    setState(() {
+      if(selectedOption == "Sponsor" ){
+        userSelected();
+      }
+      else{
+        selectedOption= "Sponsor";
+      }
+    });
+  }
+  void userSelected(){
+    setState(() {
+      selectedOption= "User";
+  });
+  }
+  void organisorSelected(){
+    setState(() {
+      if(selectedOption == "Organiser" ){
+        userSelected();
+      }
+      else{
+        selectedOption= "Organiser";
+      }
+    });
+  }
   bool _obscureText = true;
-
+  //
+  // Future<String> uploadPicture(XFile image, Reference ref) async {
+  //   File imageFileToSave = File(image.path);
+  //
+  //   UploadTask uploadTask = ref.putFile(imageFileToSave as File);
+  //   String url = await uploadTask.then((res) {
+  //     return res.ref.getDownloadURL();
+  //   });
+  //   return url;
+  // }
   @override
   Widget build(BuildContext context) {
+
+    File imageFile;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Signup'),
+        title: const Text('Signup'),
         centerTitle: true,
         elevation: 10,
-        backgroundColor: Color.fromARGB(255, 6, 60, 74),
+        backgroundColor: const Color.fromARGB(255, 6, 60, 74),
       ),
-      backgroundColor: Color.fromARGB(255, 4, 80, 101),
+      backgroundColor: const Color.fromARGB(255, 4, 80, 101),
       body: ModalProgressHUD(
         inAsyncCall: _isLoading,
         child: SingleChildScrollView(
@@ -75,7 +153,7 @@ class _SignupPageState extends State<SignupPage> {
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           filled: true,
                           prefixIcon: Icon(
                             Icons.email,
@@ -102,7 +180,7 @@ class _SignupPageState extends State<SignupPage> {
                         obscureText: _obscureText,
                         decoration: InputDecoration(
                           filled: true,
-                          prefixIcon: Icon(
+                          prefixIcon: const Icon(
                             Icons.lock,
                             color: Color.fromARGB(255, 54, 184, 19),
                           ),
@@ -119,8 +197,8 @@ class _SignupPageState extends State<SignupPage> {
                               color: Colors.grey,
                             ),
                           ),
-                          fillColor: Color.fromARGB(173, 212, 189, 189),
-                          border: OutlineInputBorder(),
+                          fillColor: const Color.fromARGB(173, 212, 189, 189),
+                          border: const OutlineInputBorder(),
                           labelText: 'Password',
                         ),
                         validator: (value) {
@@ -130,10 +208,10 @@ class _SignupPageState extends State<SignupPage> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 16.0),
+                      const SizedBox(height: 16.0),
                       TextFormField(
                         controller: _nameController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                             filled: true,
                             prefixIcon: Icon(
                               Icons.person,
@@ -156,7 +234,7 @@ class _SignupPageState extends State<SignupPage> {
                       SizedBox(height: 16.0),
                       TextFormField(
                         controller: _usernameController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                             filled: true,
                             prefixIcon: Icon(
                               Icons.verified_user,
@@ -203,7 +281,7 @@ class _SignupPageState extends State<SignupPage> {
                       TextFormField(
                         controller: _phoneNumberController,
                         keyboardType: TextInputType.phone,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                             filled: true,
                             prefixIcon: Icon(
                               Icons.phone,
@@ -225,37 +303,72 @@ class _SignupPageState extends State<SignupPage> {
                           return null;
                         },
                       ),
-                      // SizedBox(height: 16.0),
-                      // TextFormField(
-                      //   controller: _phoneNumberController,
-                      //   keyboardType: TextInputType.phone,
-                      //   decoration: InputDecoration(
-                      //       filled: true,
-                      //       prefixIcon: Icon(
-                      //         Icons.phone,
-                      //         color: Colors.amber,
-                      //       ),
-                      //       suffixIcon: Icon(
-                      //         Icons.phone,
-                      //         color: Colors.amber,
-                      //       ),
-                      //       fillColor: Color.fromARGB(173, 212, 189, 189),
-                      //       border: OutlineInputBorder(),
-                      //       labelText: 'Role'),
-                      //   validator: (value) {
-                      //     if (value!.isEmpty) {
-                      //       return 'Please enter your phone number';
-                      //     } else if (!RegExp(r'^\d{10}$').hasMatch(value)) {
-                      //       return 'Phone number must have exactly 10 digits';
-                      //     }
-                      //     return null;
-                      //   },
-                      // ),
                       SizedBox(height: 16.0),
+                      Row(
+                        children: [
+                          ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                      primary: Colors.white70,
+                        side: BorderSide(color: Colors.blueAccent, width: (selectedOption=="Organiser")?3:0),
+                        textStyle: const TextStyle(
+                            color: Colors.blueAccent, fontSize: 15, fontStyle: FontStyle.normal),
+                      ),
+                              onPressed: organisorSelected,
+                              child: Text('Organiser')
+                              ),
+                          const SizedBox(height: 16.0),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.white70,
+                              side: BorderSide(color: Colors.blueAccent, width: (selectedOption=="Sponsor")?3:0),
+                              textStyle: const TextStyle(
+                                  color: Colors.blueAccent, fontSize: 15, fontStyle: FontStyle.normal),
+                            ),
+                              onPressed: sponsorSelected,
+                              child: Text('Sponsor')
+                          ),
+                          SizedBox(height: 16.0),
+                          ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white70,
+                                side: BorderSide(color: Colors.blueAccent, width: (selectedOption=="User")?3:0),
+                                textStyle: const TextStyle(
+                                    color: Colors.blueAccent, fontSize: 15, fontStyle: FontStyle.normal),
+                              ),
+                              onPressed: userSelected,
+                              child: Text('Guest')
+                          ),
+
+                        ],
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+                          _image = image;
+                          print("This is image path${image?.path}");
+                          if (image != null) {
+                            File imageFile = File(image.path);
+                          }
+                          else{
+                            print('Image path is null');
+                          }
+                        },
+                        child: Text('Select image'),
+                      ),
                       ElevatedButton(
                         onPressed: _isLoading
                             ? null
                             : () async {
+                          String imageName = DateTime.now().millisecondsSinceEpoch.toString();
+                          Reference referenceDirImages = FirebaseStorage.instance.ref().child('profileUrls');
+                          Reference referenceImageUpload = referenceDirImages.child(imageName);
+                          referenceImageUpload.putFile(File(_image!.path));
+                          String downloadUrl = await referenceImageUpload.getDownloadURL();
+                          setState(() {
+                            profileUrl= downloadUrl;
+                            print(profileUrl);
+
+                          });
                           if (_formKey.currentState!.validate()) {
                             setState(() {
                               _isLoading = true;
@@ -269,11 +382,13 @@ class _SignupPageState extends State<SignupPage> {
                               final User? user = FirebaseAuth.instance.currentUser;
                               if (user != null) {
                                 // Create a new document in the 'users' collection with the user's UID as the document ID
-                                await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+                                await FirebaseFirestore.instance.collection('userdata').doc(user.uid).set({
                                   'name': _nameController.text,
                                   'username': _usernameController.text,
                                   'address': _addressController.text,
                                   'phoneNumber': _phoneNumberController.text,
+                                  'role': selectedOption,
+                                  'profileUrl': profileUrl,
                                 });
                               }
                               await registerWithEmailAndPassword(
@@ -282,6 +397,8 @@ class _SignupPageState extends State<SignupPage> {
                                 _usernameController.text,
                                 _addressController.text,
                                 _phoneNumberController.text,
+                                selectedOption,
+                                profileUrl
                               );
                             } catch (e) {
                               print('Error creating user: $e');
