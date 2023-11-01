@@ -1,16 +1,9 @@
 
-import 'package:clickk/utils/constant.dart';
-import 'package:clickk/views/auth/signin/widgets/GoogleSignIn.dart';
 import 'package:clickk/views/dashboard/dash_board.dart';
-import 'package:clickk/views/job_profile/ProfilePage.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:lottie/lottie.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-import '../../../../services/auth.dart';
 import '../forgotpassword/forgot_password_page.dart';
 import '../signup/sign_up_page.dart';
 
@@ -84,14 +77,14 @@ class _LoginPageState extends State<LoginPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Login Error'),
+          title: const Text('Login Error'),
           content: Text(message),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         );
@@ -105,32 +98,28 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: const Text('Login'),
         centerTitle: true,
         elevation: 10,
-        backgroundColor: Color.fromARGB(255, 6, 60, 74),
+        backgroundColor: const Color.fromARGB(255, 6, 60, 74),
       ),
-      backgroundColor: Color.fromARGB(255, 4, 80, 101),
+      backgroundColor: const Color.fromARGB(255, 4, 80, 101),
       body: ModalProgressHUD(
         inAsyncCall: _isLoading,
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             children: <Widget>[
-              // Lottie Animation
+
               Container(
-                height: 200,
-                child: Lottie.asset('assets/animation_lm0js4z1.json'),
-              ),
-              Container(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                     colors: [
-                      Color.fromARGB(255, 60, 135, 205),
-                      Color.fromARGB(255, 28, 189, 168)!
+                      const Color.fromARGB(255, 60, 135, 205),
+                      const Color.fromARGB(255, 28, 189, 168)!
                     ],
                   ),
                   borderRadius: BorderRadius.circular(16.0),
@@ -139,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                       color: Colors.black.withOpacity(0.2),
                       spreadRadius: 2,
                       blurRadius: 5,
-                      offset: Offset(0, 3),
+                      offset: const Offset(0, 3),
                     ),
                   ],
                 ),
@@ -150,7 +139,7 @@ class _LoginPageState extends State<LoginPage> {
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           filled: true,
                           prefixIcon: Icon(
                             Icons.email,
@@ -167,13 +156,13 @@ class _LoginPageState extends State<LoginPage> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 16.0),
+                      const SizedBox(height: 16.0),
                       TextFormField(
                         controller: _passwordController,
                         obscureText: _obscureText,
                         decoration: InputDecoration(
                           filled: true,
-                          prefixIcon: Icon(
+                          prefixIcon: const Icon(
                             Icons.lock,
                             color: Color.fromARGB(255, 54, 184, 19),
                           ),
@@ -190,8 +179,8 @@ class _LoginPageState extends State<LoginPage> {
                               color: Colors.grey,
                             ),
                           ),
-                          fillColor: Color.fromARGB(173, 212, 189, 189),
-                          border: OutlineInputBorder(),
+                          fillColor: const Color.fromARGB(173, 212, 189, 189),
+                          border: const OutlineInputBorder(),
                           labelText: 'Password',
                         ),
                         validator: (value) {
@@ -201,7 +190,7 @@ class _LoginPageState extends State<LoginPage> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 16.0),
+                      const SizedBox(height: 16.0),
 
                       ElevatedButton(
                         onPressed: _isLoading
@@ -222,7 +211,7 @@ class _LoginPageState extends State<LoginPage> {
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => DashBoardPage(),
+                                  builder: (context) => const DashBoardPage(),
                                 ),
                               );
                             } catch (e) {
@@ -247,13 +236,13 @@ class _LoginPageState extends State<LoginPage> {
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          primary: Color.fromARGB(255, 6, 60, 74),
-                          padding: EdgeInsets.symmetric(
+                          primary: const Color.fromARGB(255, 6, 60, 74),
+                          padding: const EdgeInsets.symmetric(
                             vertical: 12.0,
                             horizontal: 24.0,
                           ),
                         ),
-                        child: Text(
+                        child: const Text(
                           'Login',
                           style: TextStyle(
                             fontSize: 16.0,
@@ -262,7 +251,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 16.0),
+                      const SizedBox(height: 16.0),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -275,7 +264,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               );
                             },
-                            child: Text(
+                            child: const Text(
                               'Forgot Password?',
                               style: TextStyle(
                                 color: Color.fromARGB(255, 6, 60, 74),
@@ -285,17 +274,17 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       GestureDetector(
                         onTap: () {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => SignupPage(),
+                              builder: (context) => const SignupPage(),
                             ),
                           );
                         },
-                        child: Text(
+                        child: const Text(
                           "Don't have an account? Sign up",
                           style: TextStyle(
                             color: Color.fromARGB(255, 6, 60, 74),
@@ -303,17 +292,17 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       GestureDetector(
                         onTap: () {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => SignupPage(),
+                              builder: (context) => const SignupPage(),
                             ),
                           );
                         },
-                        child: Text(
+                        child: const Text(
                           'Help',
                           style: TextStyle(
                             color: Color.fromARGB(255, 6, 60, 74),

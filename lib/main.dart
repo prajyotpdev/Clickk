@@ -4,6 +4,7 @@ import 'package:clickk/firebase_options.dart';
 import 'package:clickk/views/auth/signin/sign_in_page.dart';
 import 'package:clickk/views/dashboard/dash_board.dart';
 import 'package:clickk/views/job_profile/ProfilePage.dart';
+import 'package:clickk/views/playground/UIPlayGround.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -64,13 +65,15 @@ class _MyAppState extends State<MyApp> {
           if (snapshot.connectionState == ConnectionState.active) {
             User? user = snapshot.data;
             print(user?.email);
-            if (user == null) {
-              return LoginPage();
-            } else {
-              return DashBoardPage();
-            }
-          } else {
-            return Scaffold(body: Center(child: CircularProgressIndicator()));
+            return UiPlayGround();
+            // if (user == null) {
+            //   return LoginPage();
+            // } else {
+            //   return DashBoardPage();
+            // }
+          }
+          else {
+            return const Scaffold(body: Center(child: CircularProgressIndicator()));
           }
         },
       ),

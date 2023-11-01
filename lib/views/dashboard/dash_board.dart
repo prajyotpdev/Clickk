@@ -3,12 +3,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 
+import '../../services/auth.dart';
 import '../../state/currentUser/user_provider.dart';
 import '../auth/signin/sign_in_page.dart';
 import '../dashboard/dash_board.dart';
 import '../widgets/BottomNavBar.dart';
 import '../widgets/MyAppBar.dart';
+import 'widgets/event_carousel.dart';
+import 'widgets/event_carousel_demo.dart';
 
 
 class DashBoardPage extends ConsumerStatefulWidget {
@@ -72,6 +76,11 @@ class DashBoardPageState extends ConsumerState<DashBoardPage> {
 
     final currentUser = ( ref.watch(userProvider));
 
+    final User? user=Auth().currentUser;
+
+    double width = MediaQuery. of(context). size. width ;
+    double height = MediaQuery. of(context). size. height ;
+
     return MaterialApp(
       home: WillPopScope(
         onWillPop: () async {
@@ -82,389 +91,120 @@ class DashBoardPageState extends ConsumerState<DashBoardPage> {
           appBar: MyAppBar(title: 'Dashboard'),
           backgroundColor: Color.fromARGB(255, 3, 53, 41),
           body: SingleChildScrollView(
-            child: Stack(
+            padding: const EdgeInsets.only(top: 50) ,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                // Background Gradient
-                Stack(
-                  alignment: Alignment
-                      .bottomCenter,
-                  // Align the white border and shading to the bottom
-                  children: [
-                    Container(
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height * 0.2,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage('assets/back.jpg'),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: MediaQuery
-                          .of(context)
-                          .size
-                          .height *
-                          0.2, // Match the height of the image container
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.transparent,
-                            Colors.black.withOpacity(0.5),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: 4.0,
-                      color: Colors.white,
-                    ),
-                  ],
-                ),
-                // Positioned(
-                //   top: 8,
-                //   right: 8,
-                //   child: IconButton(
-                //     icon: Icon(
-                //       Icons.edit,
-                //       color: Colors.white,
-                //     ),
-                //     onPressed: () {
-                //       Navigator.push(
-                //         context,
-                //         MaterialPageRoute(
-                //           builder: (context) => EditUserDataPage(),
-                //         ),
-                //       );
-                //     },
-                //   ),
-                // ),
-                Container(
-                  padding: EdgeInsets.only(top: 100),
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        width: 120,
-                        height: 120,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.white,
-                            width: 4.0,
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10,left: 10),
+                  child: Container(
+                    width: width ,
+                    height: height*0.1,
+                    color: Colors.transparent,
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: CircleAvatar(
+                            radius: 34,
+                            backgroundImage:
+                            NetworkImage('https://picsum.photos/id/237/200/300'),
                           ),
                         ),
-                        child: CircleAvatar(
-                          radius: 60,
-                          backgroundImage:
-                          AssetImage('assets/profile.png'),
-                        ),
-                      ),
-                      SizedBox(height: 4),
-                      Card(
-                        elevation: 3,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: Container(
-                          margin: EdgeInsets.all(6),
-                          padding: EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 161, 216, 211),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                Text(
-                                  '${currentUser['name'] ?? 'N/A'}',
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    color:
-                                    Color.fromARGB(255, 84, 30, 210),
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                Center(
-                                  child: RichText(
-                                    text: TextSpan(
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                          text: 'Bio: ',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: Color.fromARGB(
-                                                255, 0, 0, 0),
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text:
-                                          '${currentUser['bio'] ?? 'N/A'}',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            color: Color.fromARGB(
-                                                255, 59, 183, 25),
-                                          ),
-                                        ),
-                                      ],
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 5,),
+                                child: RichText(
+                                  text: TextSpan(
+                                    text: 'Welcome, ',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
                                     ),
+                                    children: [
+                                      TextSpan(
+                                        // text: user?.email?? ''+'Welcome',
+                                        text: user!.photoURL,
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        // text: user?.email?? ''+'Welcome',
+                                        text: ' \u{1F44B}',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 6.0),
-                      Card(
-                        elevation: 5,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        margin: EdgeInsets.all(16),
-                        child: Stack(
-                          children: <Widget>[
-                            Container(
-                              margin: EdgeInsets.all(6),
-                              padding: EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 135, 212, 229),
-                                borderRadius: BorderRadius.circular(5),
                               ),
-                              child: Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
-                                children: <Widget>[
+                              Row(
+                                children: [
+                                  Image.asset('assets/images/Coin.png',
+                                    height: 23.0,
+                                    width: 23.0,
+                                    fit: BoxFit.cover,
+                                  ),
                                   Padding(
-                                    padding: EdgeInsets.all(16),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          'Education',
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(height: 8),
-                                        for (var experience
-                                        in _experiences)
-                                          ListTile(
-                                            leading: Icon(
-                                              Icons.work,
-                                              color: Colors.amber,
-                                            ),
-                                            title: Text(
-                                                'Company: ${experience['companyName'] ??
-                                                    'N/A'}'),
-                                            subtitle: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment
-                                                  .start,
-                                              children: [
-                                                Text(
-                                                  'Company Name: ${experience['companyName'] ??
-                                                      'N/A'}',
-                                                  style: TextStyle(
-                                                      fontSize: 15),
-                                                ),
-                                                Text(
-                                                  'Description: ${experience['description'] ??
-                                                      'N/A'}',
-                                                  style: TextStyle(
-                                                      fontSize: 15),
-                                                ),
-                                                Text(
-                                                  'Start Date: ${experience['startDate'] ??
-                                                      'N/A'}',
-                                                  style: TextStyle(
-                                                      fontSize: 15),
-                                                ),
-                                                Text(
-                                                  'End Date: ${experience['endDate'] ??
-                                                      'N/A'}',
-                                                  style: TextStyle(
-                                                      fontSize: 15),
-                                                ),
-                                                Text(
-                                                  'Skills: ${experience['skills'] ??
-                                                      'N/A'}',
-                                                  style: TextStyle(
-                                                      fontSize: 15),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                      ],
-                                    ),
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Text(
+                                      user?.email?? ''+'Welcome',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black,
+                                      ),),
                                   ),
                                 ],
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Card(
-                        elevation: 5,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        margin: EdgeInsets.all(16),
-                        child: Stack(
-                          children: <Widget>[
-                            Container(
-                              margin: EdgeInsets.all(6),
-                              padding: EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 135, 212, 229),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: EdgeInsets.all(16),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          'Skills',
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(height: 8),
-                                        Wrap(
-                                          spacing: 8.0,
-                                          runSpacing: 8.0,
-                                          children: _skills
-                                              .asMap()
-                                              .entries
-                                              .map((entry) {
-                                            final skill = entry.value;
-                                            final skillIndex = entry.key;
-                                            final skillColor =
-                                            skillColors[skillIndex %
-                                                skillColors.length];
+                            ],
 
-                                            return Chip(
-                                              label: Text(skill),
-                                              backgroundColor: skillColor,
-                                              labelStyle: TextStyle(
-                                                  color: Colors.white),
-                                            );
-                                          }).toList(),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Card(
-                        elevation: 5,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        margin: EdgeInsets.all(16),
-                        child: Stack(
-                          children: <Widget>[
-                            Container(
-                              margin: EdgeInsets.all(6),
-                              padding: EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 135, 212, 229),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: EdgeInsets.all(16),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          'Educations',
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(height: 8),
-                                        for (var experience
-                                        in _experiences)
-                                          ListTile(
-                                            leading: Icon(
-                                              Icons.school,
-                                              color: Colors.amber,
-                                            ),
-                                            title: Text(
-                                                'Company: ${experience['companyName'] ??
-                                                    'N/A'}'),
-                                            subtitle: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment
-                                                  .start,
-                                              children: [
-                                                Text(
-                                                  'Company Name: ${experience['companyName'] ??
-                                                      'N/A'}',
-                                                  style: TextStyle(
-                                                      fontSize: 15),
-                                                ),
-                                                Text(
-                                                  'Description: ${experience['description'] ??
-                                                      'N/A'}',
-                                                  style: TextStyle(
-                                                      fontSize: 15),
-                                                ),
-                                                Text(
-                                                  'Start Date: ${experience['startDate'] ??
-                                                      'N/A'}',
-                                                  style: TextStyle(
-                                                      fontSize: 15),
-                                                ),
-                                                Text(
-                                                  'End Date: ${experience['endDate'] ??
-                                                      'N/A'}',
-                                                  style: TextStyle(
-                                                      fontSize: 15),
-                                                ),
-                                                Text(
-                                                  'Skills: ${experience['skills'] ??
-                                                      'N/A'}',
-                                                  style: TextStyle(
-                                                      fontSize: 15),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15,top: 24),
+                  child: Text('Contest',
+                    style: GoogleFonts.inter(
+                        color: Colors.black,
+                        fontWeight:FontWeight.bold,
+                        fontSize: 18
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: Container(
+                    height:250,
+                    width: width,
+                    // child: EventCarouselWidget(),
+                    child: EventCarouselWidgetDemo(),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15,top: 20),
+                  child: Text('Choose a topic',
+                    style: GoogleFonts.inter(
+                        color: Colors.black,
+                        fontWeight:FontWeight.bold,
+                        fontSize: 18
+                    ),
                   ),
                 ),
               ],
