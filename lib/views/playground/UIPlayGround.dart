@@ -16,6 +16,12 @@ class UiPlayGround extends ConsumerStatefulWidget {
 
 class UiPlayGroundState extends ConsumerState<UiPlayGround> {
 
+  fetchOrganisers() async {
+    final organisersController = ref.read(organiserControllerProvider);
+    Future<void>? fetchedOrganisers = organisersController.listenToOrganiserList();
+  }
+
+
   @override
   void initState() {
     super.initState();
@@ -27,15 +33,6 @@ class UiPlayGroundState extends ConsumerState<UiPlayGround> {
 
   @override
   Widget build(BuildContext context) {
-
-
-    fetchOrganisers() async {
-      final oranisersController = ref.read(organiserControllerProvider);
-      Future<List<Organiser?>>? fetchedOrganisers = oranisersController.listenToOrganiserList();
-      final organisers = ref.read(organiserProvider);
-      print('organisers in frontend are : ${fetchedOrganisers}');
-
-    }
 
     addOrganiser( Organiser organiser) {
       final oranisersController = ref.read(organiserControllerProvider);
@@ -54,14 +51,14 @@ class UiPlayGroundState extends ConsumerState<UiPlayGround> {
         oInstitute: 'NEw Horizon',
         oLocation: 'Mumbai',
         oName: 'Revergon',
-        oSuccessRate: '70',
+        oSuccessRate: 96,
         oUrl: 'https://www.revergon.com/',
         uid: 'uid1weq1e423')  ;
 
     return Scaffold(
       body: Column(children: [
         Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Colors.redAccent,
             shape: BoxShape.circle,
           ),),
@@ -78,7 +75,6 @@ class UiPlayGroundState extends ConsumerState<UiPlayGround> {
       ]),
     );
   }
-
 
 
 }

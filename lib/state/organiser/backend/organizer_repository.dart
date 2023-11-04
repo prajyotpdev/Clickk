@@ -12,7 +12,7 @@ class OrganiserRepository {
   final OrganiserDatastoreService organiserDatastoreServic;
 
   OrganiserRepository(this.organiserDatastoreServic);
-  Future<List<Organiser?>>? getOrganisersList() {
+  Future<void> getOrganisersList() {
     return organiserDatastoreServic.retrieveOrganisers();
   }
   Future<void>  addOrganiser(Organiser organiser) async {

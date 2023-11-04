@@ -2,12 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Organiser {
   final String? id;
-  final List<String> eventsList;
+  final List<dynamic> eventsList;
   final String oDomain;
   final String oInstitute;
   final String oLocation;
   final String oName;
-  final String oSuccessRate;
+  final int oSuccessRate;
   final String oUrl;
   final String uid;
 
@@ -39,7 +39,7 @@ class Organiser {
 
   Organiser.fromDocumentSnapshot(DocumentSnapshot<Map<String, dynamic>> doc)
       : id = doc.id,
-        eventsList = doc.data()!["events_list"],
+        eventsList = doc.data()!["events_List"],
         oDomain = doc.data()!["o_domain"],
         oInstitute = doc.data()!["o_institute"],
         oLocation = doc.data()!["o_location"],

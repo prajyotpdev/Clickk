@@ -14,7 +14,7 @@ final organiserControllerProvider = Provider<OrganiserController>((ref) {
 class OrganiserController {
   OrganiserController(this.ref);
   final Ref ref;
-  Future<List<Organiser?>>? listenToOrganiserList() {
+  Future<void>? listenToOrganiserList() {
     print('listenToOrganiserList is running');
     final organiserDetailsRepository = ref.read(organiserRepositoryProvider);
     return organiserDetailsRepository.getOrganisersList();
